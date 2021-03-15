@@ -3,7 +3,7 @@ import sys
 import logging
 import torch
 import argparse
-from defaults import get_cfg_defaults
+from configs.defaults import get_cfg_defaults
 from StyleGAN import train
 
 
