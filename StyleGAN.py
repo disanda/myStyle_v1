@@ -14,7 +14,7 @@ from nativeUtils.checkpointer import Checkpointer
 from nativeUtils.scheduler import ComboMultiStepLR
 from module.custom_adam import LREQAdam
 from tqdm import tqdm
-from defaults import get_cfg_defaults
+from configs.defaults import get_cfg_defaults
 
 torch.backends.cudnn.benchmark = True
 torch.backends.cudnn.enabled = True
