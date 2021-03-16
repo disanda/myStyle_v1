@@ -140,7 +140,7 @@ def train(cfg, logger, gpu_id=0):
 
         for x_orig in tqdm(batches): # x_orig:[-1,c,w,h]
             with torch.no_grad():
-                if x_orig.shape[0] != lod2batch.get_per_GPU_batch_size():
+                if x_orig.shape[0] != lod2batch.get_batch_size():
                     continue
                 if need_permute:
                     x_orig = x_orig.permute(0, 3, 1, 2)
