@@ -138,48 +138,46 @@ def train(cfg, logger, gpu_id=0):
 
         need_permute = False
 
-        with torch.autograd.profiler.profile(use_cuda=True, enabled=False) as prof:
-            for x_orig in tqdm(batches): # x_orig:[-1,c,w,h]
+        for x_orig in tqdm(batches): # x_orig:[-1,c,w,h]
+            with torch.no_grad():
+                if x_orig.shape[0] != lod2batch.get_per_GPU_batch_size():
+                    continue
+                if need_permute:
+                    x_orig = x_orig.permute(0, 3, 1, 2)
+                x_orig = (x_orig / 127.5 - 1.)
 
-                with torch.no_grad():
-                    if x_orig.shape[0] != lod2batch.get_per_GPU_batch_size():
-                        continue
-                    if need_permute:
-                        x_orig = x_orig.permute(0, 3, 1, 2)
-                    x_orig = (x_orig / 127.5 - 1.)
+                blend_factor = lod2batch.get_blend_factor()
 
-                    blend_factor = lod2batch.get_blend_factor()
+                needed_resolution = layer_to_resolution[lod2batch.lod]
+                x = x_orig
 
-                    needed_resolution = layer_to_resolution[lod2batch.lod]
-                    x = x_orig
+                if lod2batch.in_transition:
+                    needed_resolution_prev = layer_to_resolution[lod2batch.lod - 1]
+                    x_prev = F.avg_pool2d(x_orig, 2, 2)
+                    x_prev_2x = F.interpolate(x_prev, needed_resolution)
+                    x = x * blend_factor + x_prev_2x * (1.0 - blend_factor)
+            x.requires_grad = True
 
-                    if lod2batch.in_transition:
-                        needed_resolution_prev = layer_to_resolution[lod2batch.lod - 1]
-                        x_prev = F.avg_pool2d(x_orig, 2, 2)
-                        x_prev_2x = F.interpolate(x_prev, needed_resolution)
-                        x = x * blend_factor + x_prev_2x * (1.0 - blend_factor)
-                x.requires_grad = True
+            discriminator_optimizer.zero_grad()
+            loss_d = model(x, lod2batch.lod, blend_factor, d_train=True)
+            tracker.update(dict(loss_d=loss_d))
+            loss_d.backward()
+            discriminator_optimizer.step()
 
-                discriminator_optimizer.zero_grad()
-                loss_d = model(x, lod2batch.lod, blend_factor, d_train=True)
-                tracker.update(dict(loss_d=loss_d))
-                loss_d.backward()
-                discriminator_optimizer.step()
+            betta = 0.5 ** (lod2batch.get_batch_size() / (10 * 1000.0))
+            model.lerp(model, betta)
 
-                betta = 0.5 ** (lod2batch.get_batch_size() / (10 * 1000.0))
-                model.lerp(model, betta)
+            generator_optimizer.zero_grad()
+            loss_g = model(x, lod2batch.lod, blend_factor, d_train=False)
+            tracker.update(dict(loss_g=loss_g))
+            loss_g.backward()
+            generator_optimizer.step()
 
-                generator_optimizer.zero_grad()
-                loss_g = model(x, lod2batch.lod, blend_factor, d_train=False)
-                tracker.update(dict(loss_g=loss_g))
-                loss_g.backward()
-                generator_optimizer.step()
-
-                lod2batch.step()
-                if lod2batch.is_time_to_save():
-                        checkpointer.save("model_tmp_intermediate")
-                if lod2batch.is_time_to_report():
-                        save_sample(lod2batch, tracker, sample, x, logger, model, cfg, discriminator_optimizer, generator_optimizer)
+            lod2batch.step()
+            if lod2batch.is_time_to_save():
+                checkpointer.save("model_tmp_intermediate")
+            if lod2batch.is_time_to_report():
+                save_sample(lod2batch, tracker, sample, x, logger, model, cfg, discriminator_optimizer, generator_optimizer)
         scheduler.step()
 
         checkpointer.save("model_tmp")

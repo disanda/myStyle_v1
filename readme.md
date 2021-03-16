@@ -26,21 +26,35 @@
   1. 用于设置参数
   2. 启动train()函数
 
-## (2). dlutils
+## (2). dlutils 文件夹
 
 > deep learning utils 的简称，是作者自己做的一个包，用于模型的参数测试和输出
 
-## (3).dataUtils
+## (3).dataUtils 文件夹
 
-实现了将tf中的数据格式tfrecords，转换为pytorch的数据格式。
+- 实现了将tf中的数据格式tfrecords，转换为pytorch的数据格式。
 
-具体实现是通过pybind做了一个c++库到python的迁移，之后实现了一个
+- 具体实现是通过**pybind**做了一个c++库到python的迁移，之后实现了一个tfcord转换zip数据集的第三方库:**dareblopy**。
 
-tfcord转换zip数据集的第三方库:dareblopy。
+## (4).nativeUtils 文件夹
+
+- checkpointer.py
+
+  1.通过字典保持需要存储的对象
+
+  2.主要包括
+
+  ​	 save(),
+
+  ​	 load(), 
+
+  ​	 tag_last_checkpoint() 即标记训练时最后一个
+
+## (5). module文件夹
 
 
 
-## ().test文件夹
+## (6).test文件夹
 
 - tests.py
 

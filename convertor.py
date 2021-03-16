@@ -5,7 +5,7 @@ import logging
 import torch
 from defaults import get_cfg_defaults
 sys.path.append('./stylegan-tf')
-import dnnlib
+import dnnlib       #使用前需要倒入官方源码
 import dnnlib.tflib
 import dnnlib.tflib as tflib
 import pickle
