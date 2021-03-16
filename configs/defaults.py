@@ -18,7 +18,7 @@ from yacs.config import CfgNode as CN
 
 _C = CN()
 
-#_C.PreModel = './pre-model/karras2019stylegan-ffhq.pth'
+_C.PreModel = './pre-model/karras2019stylegan-ffhq.pth'
 
 _C.OUTPUT_DIR = "./results"
 
