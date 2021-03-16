@@ -149,8 +149,7 @@ def train(cfg, logger, gpu_id=0):
                 blend_factor = lod2batch.get_blend_factor()
 
                 needed_resolution = layer_to_resolution[lod2batch.lod]
-                x = x_orig
-                print(x_orig.shape)
+                x = x_orig #图片数据(分辨率递增)
 
                 if lod2batch.in_transition:
                     needed_resolution_prev = layer_to_resolution[lod2batch.lod - 1]
