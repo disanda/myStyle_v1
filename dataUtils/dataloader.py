@@ -48,7 +48,7 @@ class TFRecordsDataset:
         self.batch_size = batch_size
         img_size = 2 ** lod
         self.features = {
-            # 'shape': db.FixedLenFeature([3], db.int64),
+            'shape': db.FixedLenFeature([3], db.int64),
             'data': db.FixedLenFeature([3, img_size, img_size], db.uint8)
         }
         buffer_size = self.buffer_size_b // (3 * img_size * img_size)
@@ -72,5 +72,6 @@ def make_dataloader(cfg, logger, dataset, GPU_batch_size, gpu_num=0):
                 return x
     x = BatchCollator(gpu_num)
     print(x)
-    batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset) // GPU_batch_size)
+    #batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset) // GPU_batch_size)
+    batches = db.data_loader(iter(dataset),len(dataset))
     return batches
