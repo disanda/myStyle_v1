@@ -150,6 +150,7 @@ def train(cfg, logger, gpu_id=0):
 
                 needed_resolution = layer_to_resolution[lod2batch.lod]
                 x = x_orig
+                print(x_orig.shape)
 
                 if lod2batch.in_transition:
                     needed_resolution_prev = layer_to_resolution[lod2batch.lod - 1]
