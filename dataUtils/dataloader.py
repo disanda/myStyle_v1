@@ -70,5 +70,7 @@ def make_dataloader(cfg, logger, dataset, GPU_batch_size, gpu_num=0):
                 x, = batch
                 x = torch.tensor(x, requires_grad=True, device=torch.device(self.device), dtype=torch.float32)
                 return x
+    x = BatchCollator(gpu_num)
+    print(x)
     batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset) // GPU_batch_size)
     return batches
