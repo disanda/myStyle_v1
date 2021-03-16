@@ -46,15 +46,12 @@ class TFRecordsDataset:
         assert lod in self.filenames.keys()
         self.current_filenames = self.filenames[lod]
         self.batch_size = batch_size
-
         img_size = 2 ** lod
-
         self.features = {
             # 'shape': db.FixedLenFeature([3], db.int64),
             'data': db.FixedLenFeature([3, img_size, img_size], db.uint8)
         }
         buffer_size = self.buffer_size_b // (3 * img_size * img_size)
-
         self.iterator = db.ParsedTFRecordsDatasetIterator(self.current_filenames, self.features, self.batch_size, buffer_size, seed=np.uint64(time.time() * 1000))
 
     def __iter__(self):
@@ -64,15 +61,14 @@ class TFRecordsDataset:
         return self.part_count_local * self.part_size
 
 
-def make_dataloader(cfg, logger, dataset, GPU_batch_size, local_rank):
+def make_dataloader(cfg, logger, dataset, GPU_batch_size, gpu_num=0):
     class BatchCollator(object):
         def __init__(self, device=torch.device("cpu")):
             self.device = device
-
         def __call__(self, batch):
             with torch.no_grad():
                 x, = batch
                 x = torch.tensor(x, requires_grad=True, device=torch.device(self.device), dtype=torch.float32)
                 return x
-    batches = db.data_loader(iter(dataset), BatchCollator(local_rank), len(dataset) // GPU_batch_size)
+    batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset) // GPU_batch_size)
     return batches

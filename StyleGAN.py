@@ -122,18 +122,17 @@ def train(cfg, logger, gpu_id=0):
         model.train()
         lod2batch.set_epoch(epoch, [generator_optimizer, discriminator_optimizer])
 
-        logger.info("Batch size: %d, Batch size per GPU: %d, LOD: %d - %dx%d, blend: %.3f, dataset size: %d" % (
+        logger.info("Batch size: %d, LOD: %d - %dx%d, blend: %.3f, dataset size: %d" % (
                                                                 lod2batch.get_batch_size(),
-                                                                lod2batch.get_per_GPU_batch_size(),
                                                                 lod2batch.lod,
                                                                 2 ** lod2batch.get_lod_power2(),
                                                                 2 ** lod2batch.get_lod_power2(),
                                                                 lod2batch.get_blend_factor(),
                                                                 len(dataset)))
 
-        dataset.reset(lod2batch.get_lod_power2(), lod2batch.get_per_GPU_batch_size())
+        dataset.reset(lod2batch.get_lod_power2(), lod2batch.get_batch_size())
         print('pass-------------------------1')
-        batches = make_dataloader(cfg, logger, dataset, lod2batch.get_per_GPU_batch_size(), gpu_id) # 一个数据集分为多个batch,一个batch有n长图片
+        batches = make_dataloader(cfg, logger, dataset, lod2batch.get_batch_size()) # 一个数据集分为多个batch,一个batch有n长图片
         print('pass-------------------------2')
         scheduler.set_batch_size(lod2batch.get_batch_size(), lod2batch.lod) #报错！
         print('pass-------------------------3')

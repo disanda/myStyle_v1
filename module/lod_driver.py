@@ -5,17 +5,8 @@ from collections import defaultdict
 
 #一个可以返回各类训练参数(param)的对象
 class LODDriver:
-    def __init__(self, cfg, logger, gpu_num, dataset_size):
-        if gpu_num == 8:
-            self.lod_2_batch = cfg.TRAIN.LOD_2_BATCH_8GPU
-        if gpu_num == 4:
-            self.lod_2_batch = cfg.TRAIN.LOD_2_BATCH_4GPU
-        if gpu_num == 2:
-            self.lod_2_batch = cfg.TRAIN.LOD_2_BATCH_2GPU
-        if gpu_num == 1:
-            self.lod_2_batch = cfg.TRAIN.LOD_2_BATCH_1GPU #[128, 128, 128,   64,   32,    16]
-
-        self.gpu_num = gpu_num
+    def __init__(self, cfg, logger, dataset_size):
+        self.lod_2_batch = cfg.TRAIN.LOD_2_BATCH_1GPU #[128, 128, 128,   64,   32,    16]
         self.minibatch_base = 16
         self.cfg = cfg
         self.dataset_size = dataset_size
@@ -40,9 +31,6 @@ class LODDriver:
 
     def get_dataset_size(self):
         return self.dataset_size
-
-    def get_per_GPU_batch_size(self):
-        return self.get_batch_size() // self.gpu_num
 
     def get_blend_factor(self):
         blend_factor = float((self.current_epoch % self.cfg.TRAIN.EPOCHS_PER_LOD) * self.dataset_size + self.iteration)
