@@ -132,11 +132,11 @@ def train(cfg, logger, gpu_id=0):
                                                                 len(dataset)))
 
         dataset.reset(lod2batch.get_lod_power2(), lod2batch.get_per_GPU_batch_size())
-        print('pass-------------------------')
+        print('pass-------------------------1')
         batches = make_dataloader(cfg, logger, dataset, lod2batch.get_per_GPU_batch_size(), gpu_id) # 一个数据集分为多个batch,一个batch有n长图片
-
+        print('pass-------------------------2')
         scheduler.set_batch_size(lod2batch.get_batch_size(), lod2batch.lod) #报错！
-
+        print('pass-------------------------3')
         need_permute = False
 
         for x_orig in tqdm(batches): # x_orig:[-1,c,w,h]
