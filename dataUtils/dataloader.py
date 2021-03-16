@@ -68,10 +68,10 @@ def make_dataloader(cfg, logger, dataset, GPU_batch_size, gpu_num=0):
         def __call__(self, batch):
             with torch.no_grad():
                 x,y = batch
-                print(x.shape)
-                print(y.shape)
-                x = torch.tensor(x, requires_grad=True, device=torch.device(self.device), dtype=torch.float32)
-                return x
+                #print(x.shape) #标签 (-1,3)
+                #print(y.shape) #数据 (-1,3,4,4)
+                y = torch.tensor(x, requires_grad=True, device=torch.device(self.device), dtype=torch.float32)
+                return y
     batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset))
     #batches = db.data_loader(iter(dataset),len(dataset))
     return batches
