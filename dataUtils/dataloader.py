@@ -72,6 +72,6 @@ def make_dataloader(cfg, logger, dataset, GPU_batch_size, gpu_num=0):
                 return x
     x = BatchCollator(gpu_num)
     print(x)
-    #batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset) // GPU_batch_size)
-    batches = db.data_loader(iter(dataset),len(dataset))
+    batches = db.data_loader(iter(dataset), BatchCollator(gpu_num), len(dataset))
+    #batches = db.data_loader(iter(dataset),len(dataset))
     return batches
