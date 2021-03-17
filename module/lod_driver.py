@@ -66,7 +66,7 @@ class LODDriver:
         self.tick_start_nimg_snapshot = 0
         self.epoch_start_time = time.time()
 
-        new_lod = min(self.cfg.MODEL.LAYER_COUNT - 1, epoch // self.cfg.TRAIN.EPOCHS_PER_LOD) #最小是0,提升lod即分辨率
+        new_lod = min(self.cfg.MODEL.LAYER_COUNT - 1, epoch // self.cfg.TRAIN.EPOCHS_PER_LOD) #第一个值是固定的。第二个值最小是0,提升lod即分辨率
         if new_lod != self.lod:
             self.lod = new_lod
             self.logger.info("#" * 80)

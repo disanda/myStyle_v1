@@ -33,8 +33,8 @@
 ## (3).dataUtils 文件夹
 
 - 实现了将tf中的数据格式tfrecords，转换为pytorch的数据格式。
-
-- 具体实现是通过**pybind**做了一个c++库到python的迁移，之后实现了一个tfcord转换zip数据集的第三方库:**dareblopy**。
+- 具体实现是通过**pybind**做了一个c++库到python的迁移
+- 再实现了一个将tfrecord中的zip数据集转换到pytorch的第三方库:**dareblopy** [链接](https://github.com/podgorskiy/DareBlopy)。
 
 ## (4).nativeUtils 文件夹
 
@@ -52,7 +52,13 @@
 
 ## (5). module文件夹
 
-
+* logdriver.py
+  1. 类似一个驱动文件，将配置中的参数记录在一个类	
+  2. 并随着分辨率(lod)的增长而通过内置方法改变: set_epoch()
+* losses.py
+  1. 默认用的是逻辑回归,其实D+gp 
+  2. 总的包括 kl , BCE, LR
+  3. 实现逻辑回归用的是 F.softplus(), 假值带负号输入
 
 ## (6).test文件夹
 
