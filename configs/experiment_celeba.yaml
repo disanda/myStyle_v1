@@ -16,7 +16,7 @@ MODEL:
 OUTPUT_DIR: ./results/celeba512/
 TRAIN:
   BASE_LEARNING_RATE: 0.0015 #这个用于adam内部
-  EPOCHS_PER_LOD: [100,100,100,100,100,100] # 单个分辨率迭代的次数，每次的batch见 LOD_2_BATCH_1GPU
+  EPOCHS_PER_LOD: 100 # 单个分辨率迭代的次数，每次的batch见 LOD_2_BATCH_1GPU
   LEARNING_DECAY_RATE: 0.1
   LEARNING_DECAY_STEPS: []
   TRAIN_EPOCHS: 600 #总的次数，会分摊到每个分辨率中
